@@ -1,61 +1,64 @@
+(function() {
+	"use strict";
 	
-	var build = {	
-		element: function(type, classe, append){
-			var element = document.createElement(type);
-				element.setAttribute('class', classe);
-			append.appendChild(element);			
-			this.element = element;
-		}
-	};
+	// https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html#examples
 	
-		document.body.onload = function(){
+	this.addEventListener("load", function() {
 		
-			var title = new build.element('h2', 'title', document.body);
-				title.element.innerHTML = "Speech Recognition";
-//------------------------------------------------------------------------------------------------------------------Spoken		
-			var fild = new build.element('input', '', document.body);
-				fild.element.setAttribute('type', 'text'); 
+		var spoken = document.getElementById("spoken"),
+			talk = document.getElementById("talk"),
+			language = document.getElementById("language"),
+			field = document.getElementById("field"),
+			section = document.getElementById("section");
+		
+		var app = {
+			initialize: function() {
+				document.addEventListener("deviceready", this.deviceready);
 				
-			var spoken = new build.element('button', 'start', document.body);
-				spoken.element.innerHTML = 'Spoken';
-				spoken.element.onclick = function(){	
-					try{						
-						var sound = new SpeechSynthesisUtterance();
-							sound.text = fild.element.value;
-							sound.lang = 'en-US';
-							sound.rate = 1.2;
-							sound.onend = function(event) {
-								alert('Finished in ' + event.elapsedTime + ' seconds.'); 
+			},
+			deviceready: function() {
+				app.write("DeviceReady");
+				
+			},
+			talk: function() {
+				try{
+					talk.style.background = '#86DD79';
+					
+					var recognition = new SpeechRecognition();
+						recognition.onresult = function(e) {
+							talk.style.background = '#00aeff';
+							if (e.results.length > 0) {
+								talk.style.background = '#3b3b3b';
+								app.write(e.results[0][0].transcript);
 							}
-							
-							speechSynthesis.speak(sound);
-					}
-					catch(e){
-						alert(e.message);	
-					}
-				}			
-//------------------------------------------------------------------------------------------------------------------Talk				
-			var talk = new build.element('button', 'start', document.body);
-				talk.element.setAttribute('style', 'display: block');
-				talk.element.innerHTML = 'Talk';
-				talk.element.onclick = function(){
-					try{
-						talk.element.style.background = '#86DD79';
-						var recognition = new SpeechRecognition();
-							recognition.onresult = function(event) {
-								talk.element.style.background = '#00aeff';
-								if (event.results.length > 0){
-									talk.element.style.background = '#3b3b3b';
-									var blackboard = new build.element('div', 'blackboard', document.body);								
-										blackboard.element.innerHTML += event.results[0][0].transcript;
-								}
-							}			
-						recognition.start();
-					}
-					catch(e){
-						talk.element.style.background = '#3b3b3b';
-						alert(e.message);	
-					}
-				}
+						}
+					recognition.start();
+				} catch(e) { alert(e.message); }
+			},
 			
+			spoken: function() {
+				try {
+					var sound = new SpeechSynthesisUtterance();
+						sound.text = field.value;
+						sound.lang = language.value;
+						sound.rate = 1.2;
+						sound.onend = function(data) {
+							var t = (JSON.stringify(data) == "{}")? "☺" : "☹";
+							app.write("Spoken: "+t);
+						};
+						speechSynthesis.speak(sound);
+						
+				} catch(e) { alert(e.stack); }
+			},
+			
+			write: function(e) {
+				section.innerHTML += "<p>"+e+"</p>";
+			}
 		};
+		
+		talk.addEventListener("click", app.talk);
+		spoken.addEventListener("click", app.spoken);
+		
+		app.initialize();		
+	}, false);
+}).call(this);

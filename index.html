@@ -2,12 +2,30 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
 		<title>SpeechRecognition</title>
 		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
 	</head>
 	<body>
-		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-		<script type="text/javascript" src="childbrowser.js"></script>
-		<script type="text/javascript" src="js/index.js"></script>
+		<h2 style="margin: 5%; padding: 2%; color: #fff; background-color: #005866;" >Speech Recognition</h2>
+		<input type="text" id="field" />
+		<label style="display: block; margin: 3% 5% 5% 5%; color: #005866;" >Language:
+			<select id="language" >
+				<option value="en-US">English</option>
+				<option value="es-ES">Spanish</option>
+				<option value="fr-FR">French</option>
+				<option value="it-IT">Italian</option>
+				<option value="pl-PL">Polish</option>
+				<option value="pt-PT">Portuguese</option>
+			</select>
+		</label>
+		
+		<button id="spoken">Spoken</button>
+		<button id="talk">Talk</button>
+		
+		<section id="section"></section>
+		
 	</body>
 </html>
