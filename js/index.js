@@ -19,6 +19,9 @@
 			deviceready: function() {
 				app.write("DeviceReady");
 				
+				if(window.SpeechSynthesisUtterance) app.write("SpeechSynthesisUtterance is true");
+				if(window.SpeechRecognition) app.write("SpeechRecognition is true");
+				
 			},
 			talk: function() {
 				try{
